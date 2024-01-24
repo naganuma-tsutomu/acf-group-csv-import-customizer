@@ -14,5 +14,5 @@ Author: naganuma
  * @return $meta_array
  */
 
-require_once(__DIR__ . '/hook.php');
-require_once(__DIR__ . '/class.php');
+require_once(__DIR__ . '/src/hook.php');
+require_once(__DIR__ . '/src/class.php');
