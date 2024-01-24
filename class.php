@@ -72,7 +72,7 @@ class ShopImport
                 case $this->keyArray['sat_check']:
                 case $this->keyArray['sun_check']:
                     if ($value == '休') {
-                        $this->inport($key, 'holiday');
+                        $this->parentImport($key, 'holiday');
                     }
                     // クレジットカード
                 case $this->keyArray['credit_card_select']:
