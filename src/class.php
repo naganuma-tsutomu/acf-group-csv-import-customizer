@@ -16,6 +16,13 @@ class ShopImport
     public function makeKey()
     {
         $key_array = array(
+            'mon_check' => 'field_627df47e464f3', // 月曜定休日
+            'tue_check' => 'field_627df47e464fe', // 火曜定休日
+            'wed_check' => 'field_627df47e46509', // 水曜定休日
+            'thu_check' => 'field_627e09d0ecc63', // 木曜定休日
+            'fri_check' => 'field_627e09e01a63e', // 金曜定休日
+            'sat_check' => 'field_627e0996659d9', // 土曜定休日
+            'sun_check' => 'field_627df47e464e8', // 日曜定休日
             'credit_card_check' => 'field_62820710066ec', // クレジットカード 有無
             'credit_card_select' => 'field_627dcdfad6a5d', // クレジットカード チェックボックス
             'electronic_money_check' => 'field_628209dfb1195', // 電子マネー 有無
@@ -57,64 +64,76 @@ class ShopImport
 
             switch ($key) {
 
+                case $this->keyArray['mon_check']:
+                case $this->keyArray['tue_check']:
+                case $this->keyArray['wed_check']:
+                case $this->keyArray['thu_check']:
+                case $this->keyArray['fri_check']:
+                case $this->keyArray['sat_check']:
+                case $this->keyArray['sun_check']:
+                    if ($value == '休') {
+                        $this->inport($key, 'holiday');
+                    }
+
+
                     // クレジットカード
                 case $this->keyArray['credit_card_select']:
-                    $this->parentImport($key, preg_split("/,+/", $value));
-                    $this->parentImport($this->keyArray['credit_card_check'], 'true');
+                    $this->inport($key, preg_split("/,+/", $value));
+                    $this->inport($this->keyArray['credit_card_check'], 'true');
                     break;
                     // 電子マネー
                 case $this->keyArray['electronic_money_select']:
-                    $this->parentImport($key, preg_split("/,+/", $value));
-                    $this->parentImport($this->keyArray['electronic_money_check'], 'true');
+                    $this->inport($key, preg_split("/,+/", $value));
+                    $this->inport($this->keyArray['electronic_money_check'], 'true');
                     break;
                     // 人数・座席数
                 case $this->keyArray['capacity_people']: // 人数
-                    $this->parentImport($key, $value);
-                    $this->parentImport($this->keyArray['capacity_check'], 'people');
+                    $this->inport($key, $value);
+                    $this->inport($this->keyArray['capacity_check'], 'people');
                     break;
                 case $this->keyArray['capacity_seat']: // 座席数
-                    $this->parentImport($key, $value);
-                    $this->parentImport($this->keyArray['capacity_check'], 'seat');
+                    $this->inport($key, $value);
+                    $this->inport($this->keyArray['capacity_check'], 'seat');
                     break;
                     // 駐車場
                 case $this->keyArray['parking_units']:
-                    $this->parentImport($key, $value);
-                    $this->parentImport($this->keyArray['parking_check'], 'true');
+                    $this->inport($key, $value);
+                    $this->inport($this->keyArray['parking_check'], 'true');
                     break;
                     // 喫煙
                 case $this->keyArray['smoking_check']:
                     if ($value == '可') {
-                        $this->parentImport($key, 'true');
+                        $this->inport($key, 'true');
                     } elseif ($value == '不可') {
-                        $this->parentImport($key, 'false');
+                        $this->inport($key, 'false');
                     }
                     break;
                     // SNS
                 case $this->keyArray['sns_instagram_account']: // SNS instagram
-                    $this->parentImport($key, $value);
-                    $this->parentImport($this->keyArray['sns_instagram_check'], 'true');
+                    $this->inport($key, $value);
+                    $this->inport($this->keyArray['sns_instagram_check'], 'true');
                     break;
                 case $this->keyArray['sns_facebook_account']: // SNS facebook
-                    $this->parentImport($key, $value);
-                    $this->parentImport($this->keyArray['sns_facebook_check'], 'true');
+                    $this->inport($key, $value);
+                    $this->inport($this->keyArray['sns_facebook_check'], 'true');
                     break;
                 case $this->keyArray['sns_twitter_account']: // SNS twitter
-                    $this->parentImport($key, $value);
-                    $this->parentImport($this->keyArray['sns_twitter_check'], 'true');
+                    $this->inport($key, $value);
+                    $this->inport($this->keyArray['sns_twitter_check'], 'true');
                     break;
                 case $this->keyArray['sns_line_account']: // SNS line
-                    $this->parentImport($key, $value);
-                    $this->parentImport($this->keyArray['sns_line_check'], 'true');
+                    $this->inport($key, $value);
+                    $this->inport($this->keyArray['sns_line_check'], 'true');
                     break;
                 case $this->keyArray['sns_youtube_account']: // SNS youtube
-                    $this->parentImport($key, $value);
-                    $this->parentImport($this->keyArray['sns_youtube_check'], 'true');
+                    $this->inport($key, $value);
+                    $this->inport($this->keyArray['sns_youtube_check'], 'true');
                     break;
 
                     // google map
                 case $this->keyArray['city']:
-                    $this->parentImport($this->keyArray['pref'], '沖縄県');
-                    $this->parentImport($key, $value);
+                    $this->inport($this->keyArray['pref'], '沖縄県');
+                    $this->inport($key, $value);
                     $shop_address = '沖縄県' . $value .  $meta[$this->keyArray['addr']]; // google map検索用の住所を作成(建物名は不要)
 
                     $url = sprintf( // Geocoding API を使い緯度経度データを取得
@@ -139,7 +158,7 @@ class ShopImport
                     $lat = $json_data["results"][0]["geometry"]["location"]["lat"]; // 緯度を変数に
                     $lng = $json_data["results"][0]["geometry"]["location"]["lng"]; // 経度を変数に
 
-                    $this->parentImport($this->keyArray['location'], [
+                    $this->inport($this->keyArray['location'], [
                         "address" => $shop_address, // 住所を入れる
                         "lat" => $lat, // 緯度を入れる
                         "lng" => $lng // 経度を入れる
@@ -156,7 +175,7 @@ class ShopImport
                     $img_ids = $this->get_attachment_id($value);
 
                     if (!empty($img_ids)) {
-                        $this->parentImport($key, $img_ids[0]);
+                        $this->inport($key, $img_ids[0]);
                         //画像を投稿に関連付けする
                         $this->update_attachment_post_parent($img_ids[0], $post_id, $post_author);
                     }
@@ -164,35 +183,47 @@ class ShopImport
 
                     // 基本のカスタムフィールド
                 default:
-                    $this->parentImport($key, $value);
+                    $this->inport($key, $value);
             }
         }
     }
 
-    public function parentImport($key, $value)
+    /**
+     * インポート関数
+     */
+    public function inport($key, $value)
     {
         global $wpdb;
-        $fieldArray = array();
         /*フィールドキーを取得して挿入する設定*/
         $prepared = $wpdb->prepare($this->sqlNormal(), esc_sql($key));
         $parentFieldId = $wpdb->get_col($prepared); // 親のカスタムフィールドのIDの取得
         if (!empty($parentFieldId)) {
-            while (!empty($parentFieldId)) { // 親のカスタムフィールドのIDが存在すれば
-                $pr = $wpdb->prepare($this->relatedSQL(), esc_sql($parentFieldId[0]));
-                $parentField = $wpdb->get_col($pr); // カスタムフィールドのキーの取得
-                if (!empty($parentField)) { // カスタムフィールドのキーが取得できれば
-                    (empty($fieldArray)) ? $fieldArray = array($parentField[0] => array($key => $value)) : $fieldArray = array($parentField[0] => $fieldArray);
-                    $prepared = $wpdb->prepare($this->sqlNormal(), esc_sql($parentField[0]));
-                    $parentFieldId = $wpdb->get_col($prepared);
-                } else {
-                    if (empty($fieldArray)) $fieldArray = array($key => $value);
-                    $parentFieldId = null;
-                }
-            }
-            $this->metaArray = array_merge_recursive($this->metaArray, $fieldArray);
+            $this->parentImport($parentFieldId, $key, $value);
         } else {
             $this->metaArray[$key] = $value;
         }
+    }
+
+    /**
+     * グループのカスタムフィールドの場合のインポート
+     */
+    private function parentImport($parentFieldId, $key, $value)
+    {
+        global $wpdb;
+        $fieldArray = array();
+        while (!empty($parentFieldId)) { // 親のカスタムフィールドのIDが存在すれば
+            $pr = $wpdb->prepare($this->relatedSQL(), esc_sql($parentFieldId[0]));
+            $parentField = $wpdb->get_col($pr); // カスタムフィールドのキーの取得
+            if (!empty($parentField)) { // カスタムフィールドのキーが取得できれば
+                (empty($fieldArray)) ? $fieldArray = array($parentField[0] => array($key => $value)) : $fieldArray = array($parentField[0] => $fieldArray);
+                $prepared = $wpdb->prepare($this->sqlNormal(), esc_sql($parentField[0]));
+                $parentFieldId = $wpdb->get_col($prepared);
+            } else {
+                if (empty($fieldArray)) $fieldArray = array($key => $value);
+                $parentFieldId = null;
+            }
+        }
+        $this->metaArray = array_merge_recursive($this->metaArray, $fieldArray);
     }
 
     /**
@@ -276,13 +307,13 @@ class TouristspotImport extends ShopImport
                 echo '</pre>';
 
                 if (!empty($img_ids)) {
-                    $this->parentImport($key, $img_ids[0]);
+                    $this->inport($key, $img_ids[0]);
                     //画像を投稿に関連付けする
                     $this->update_attachment_post_parent($img_ids[0], $post_id, $post_author);
                 }
             } else if ($key === $this->keyArray['address']) {
                 // google map
-                $this->parentImport($key, $value);
+                $this->inport($key, $value);
 
                 $url = sprintf( // Geocoding API を使い緯度経度データを取得
                     "https://maps.googleapis.com/maps/api/geocode/json?address=%s&key=%s",
@@ -303,17 +334,14 @@ class TouristspotImport extends ShopImport
                     $lat = $json_data["results"][0]["geometry"]["location"]["lat"]; // 緯度を変数に
                     $lng = $json_data["results"][0]["geometry"]["location"]["lng"]; // 経度を変数に
 
-                    $this->parentImport($this->keyArray['location'], [
+                    $this->inport($this->keyArray['location'], [
                         "address" => $value, // 住所を入れる
                         "lat" => $lat, // 緯度を入れる
                         "lng" => $lng // 経度を入れる
                     ]);
                 }
-                echo '<pre>';
-                var_dump($json_data);
-                echo '</pre>';
             } else {
-                $this->parentImport($key, $value);
+                $this->inport($key, $value);
             }
         }
     }
