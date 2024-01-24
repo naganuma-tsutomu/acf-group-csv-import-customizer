@@ -16,6 +16,13 @@ class ShopImport
     public function makeKey()
     {
         $key_array = array(
+            'mon_check' => 'field_627df47e464f3', // 月曜定休日
+            'tue_check' => 'field_627df47e464fe', // 火曜定休日
+            'wed_check' => 'field_627df47e46509', // 水曜定休日
+            'thu_check' => 'field_627e09d0ecc63', // 木曜定休日
+            'fri_check' => 'field_627e09e01a63e', // 金曜定休日
+            'sat_check' => 'field_627e0996659d9', // 土曜定休日
+            'sun_check' => 'field_627df47e464e8', // 日曜定休日
             'credit_card_check' => 'field_62820710066ec', // クレジットカード 有無
             'credit_card_select' => 'field_627dcdfad6a5d', // クレジットカード チェックボックス
             'electronic_money_check' => 'field_628209dfb1195', // 電子マネー 有無
@@ -57,6 +64,16 @@ class ShopImport
 
             switch ($key) {
 
+                case $this->keyArray['mon_check']:
+                case $this->keyArray['tue_check']:
+                case $this->keyArray['wed_check']:
+                case $this->keyArray['thu_check']:
+                case $this->keyArray['fri_check']:
+                case $this->keyArray['sat_check']:
+                case $this->keyArray['sun_check']:
+                    if ($value == '休') {
+                        $this->inport($key, 'holiday');
+                    }
                     // クレジットカード
                 case $this->keyArray['credit_card_select']:
                     $this->parentImport($key, preg_split("/,+/", $value));
