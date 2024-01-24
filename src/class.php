@@ -207,7 +207,7 @@ class ShopImport
     /**
      * グループのカスタムフィールドの場合のインポート
      */
-    private function parentImport($parentFieldId, $key, $value)
+    public function parentImport($parentFieldId, $key, $value)
     {
         global $wpdb;
         $fieldArray = array();
