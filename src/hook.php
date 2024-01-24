@@ -1,5 +1,14 @@
 <?php
-// ---------------------------------------------------------------------------- 基本情報インポート
+
+/**
+ * 基本情報インポート
+ *
+ * @param $meta
+ * @param $post
+ * @param $is_update
+ *
+ * @return $meta_array
+ */
 function really_simple_csv_importer_save_meta_filter($meta, $post, $is_update)
 {
     global $wpdb;
