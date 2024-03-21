@@ -2,7 +2,7 @@
 /*
 Plugin Name: ACF Group CSV import customizer
 Description: ACFのグループフィールドを登録するためのプラグインです。
-Version: 1.1.0
+Version: 1.2.0
 Author: naganuma
 */
 

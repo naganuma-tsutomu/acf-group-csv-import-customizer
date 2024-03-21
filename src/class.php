@@ -356,3 +356,28 @@ class TouristspotImport extends ShopImport
         return $key_array;
     }
 }
+class UchinaGuideImport extends ShopImport
+{
+    public function foreach($meta, $key, $value, $post_id = null, $post_author = null)
+    {
+        $value = trim($value); // 値の前後の空白は削除する
+        if (!empty($value)) { // 値があれば
+            if (false !== strpos($key, '_img')) {
+                $key = str_replace('_img', '', $key);
+                // 画像名から登録されているメディアのIDを取得
+                $img_ids = $this->get_attachment_id($value);
+                echo '<pre>';
+                var_dump($img_ids);
+                echo '</pre>';
+
+                if (!empty($img_ids)) {
+                    $this->inport($key, $img_ids[0]);
+                    //画像を投稿に関連付けする
+                    $this->update_attachment_post_parent($img_ids[0], $post_id, $post_author);
+                }
+            } else {
+                $this->inport($key, $value);
+            }
+        }
+    }
+}

@@ -36,6 +36,8 @@ function really_simple_csv_importer_save_meta_filter($meta, $post, $is_update)
 
     if ($post["post_type"] === 'tourist-spot') {
         $import = new TouristspotImport();
+    }elseif($post["post_type"] === 'uchina-guide'){
+        $import = new UchinaGuideImport();
     } else {
         $import = new ShopImport();
     }
